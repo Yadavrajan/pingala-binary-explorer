@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piṅgala Binary Explorer - IKS CS Simulation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-100 tracking-wide">Piṅgala Binary Explorer</h1>
+                    <p class="text-xs text-amber-400 font-medium">IKS in Computational Systems</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 text-xs font-mono text-slate-400">
+                <span class="px-2.5 py-1 bg-slate-800 rounded-md border border-slate-700">Topic #1</span>
+                <span class="px-2.5 py-1 bg-slate-800 rounded-md border border-slate-700">Laghu (0) / Guru (1)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Panel: Controls & Converter -->
+        <section class="lg:col-span-5 space-y-6">
+            
+            <!-- Controls Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i> Prastāra Generator Controls
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label for="pattern-len" class="text-sm font-medium text-slate-300">Pattern Length (n bits)</label>
+                            <span id="len-val" class="text-amber-400 font-mono font-bold text-sm">3</span>
+                        </div>
+                        <input type="range" id="pattern-len" min="1" max="6" value="3" 
+                               class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                    </div>
+                    
+                    <div class="p-4 bg-slate-900 border border-slate-800 rounded-lg grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase">Total Permutations</span>
+                            <span id="total-perms" class="text-xl font-bold font-mono text-slate-100">8</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase">Space Complexity</span>
+                            <span class="text-xl font-bold font-mono text-amber-400">2ⁿ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uddiṣṭa Converter Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i data-lucide="binary" class="w-4 h-4 text-sky-400"></i> Uddiṣṭa Lookup Engine
+                </h2>
+                
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">Enter Meter Pattern (Only 'L' & 'G')</label>
+                    <input type="text" id="meter-input" value="GLG" placeholder="e.g. GLG"
+                           class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 font-mono focus:outline-none focus:border-sky-400 uppercase tracking-widest">
+                </div>
+
+                <div id="converter-result" class="p-4 bg-slate-900/80 border border-slate-800 rounded-lg flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500 block">Mapped Index (Decimal)</span>
+                        <span id="res-decimal" class="text-2xl font-bold font-mono text-sky-400">5</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Binary Standard</span>
+                        <span id="res-binary" class="text-lg font-mono text-slate-300">101</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptual Mapping Quick Reference -->
+            <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-6">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> IKS Quick Dictionary
+                </h2>
+                <ul class="text-xs space-y-2 text-slate-400">
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Laghu (L)</span> <span>Binary 0 (Short state)</span>
+                    </li>
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Guru (G)</span> <span>Binary 1 (Long state)</span>
+                    </li>
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Prastāra</span> <span>Combinatorial Permutations</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-bold text-slate-200">Uddiṣṭa</span> <span>Pattern-to-Index Conversion</span>
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- Right Panel: Dynamic Prastāra Table -->
+        <section class="lg:col-span-7">
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl h-full flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <i data-lucide="table" class="w-4 h-4 text-amber-400"></i> Generated Permutations (Prastāra)
+                    </h2>
+                    <span class="text-xs text-slate-500">Live Binary Mapping</span>
+                </div>
+
+                <div class="overflow-x-auto flex-1 border border-slate-800 rounded-lg">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-slate-400 text-xs uppercase font-mono border-b border-slate-800">
+                                <th class="p-3">Index</th>
+                                <th class="p-3">Binary Vector</th>
+                                <th class="p-3">Sanskrit Meter (IKS)</th>
+                                <th class="p-3 text-right">Decimal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prastara-tbody" class="font-mono text-sm divide-y divide-slate-800/60">
+                            <!-- Injected dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
+        IKS in Computational Systems • Piṅgala’s Chandaḥśāstra Interactive Tool
+    </footer>
+
+    <!-- Interactive Logic -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // DOM Elements
+        const rangeInput = document.getElementById('pattern-len');
+        const lenVal = document.getElementById('len-val');
+        const totalPerms = document.getElementById('total-perms');
+        const prastaraTbody = document.getElementById('prastara-tbody');
+        const meterInput = document.getElementById('meter-input');
+        const resDecimal = document.getElementById('res-decimal');
+        const resBinary = document.getElementById('res-binary');
+
+        // Generator Logic
+        function renderPrastara(n) {
+            const total = 1 << n;
+            lenVal.textContent = n;
+            totalPerms.textContent = total;
+            
+            let html = '';
+            for (let i = 0; i < total; i++) {
+                const binaryStr = i.toString(2).padStart(n, '0');
+                const meterStr = binaryStr.replace(/0/g, 'L').replace(/1/g, 'G');
+                
+                // Highlight L and G differently
+                const styledMeter = meterStr.split('').map(char => 
+                    char === 'L' 
+                        ? `<span class="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 font-bold">L</span>`
+                        : `<span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">G</span>`
+                ).join(' ');
+
+                html += `
+                    <tr class="hover:bg-slate-900/50 transition">
+                        <td class="p-3 text-slate-500">${i}</td>
+                        <td class="p-3 text-slate-300">${binaryStr}</td>
+                        <td class="p-3">${styledMeter}</td>
+                        <td class="p-3 text-right text-amber-400 font-bold">${i}</td>
+                    </tr>
+                `;
+            }
+            prastaraTbody.innerHTML = html;
+        }
+
+        // Converter Logic
+        function updateConverter() {
+            const val = meterInput.value.trim().toUpperCase();
+            if (!val || !/^[LG]+$/.test(val)) {
+                resDecimal.textContent = '-';
+                resBinary.textContent = 'Invalid Input';
+                resBinary.classList.add('text-red-400');
+                return;
+            }
+            resBinary.classList.remove('text-red-400');
+
+            const binaryStr = val.replace(/L/g, '0').replace(/G/g, '1');
+            const decimalVal = parseInt(binaryStr, 2);
+
+            resDecimal.textContent = decimalVal;
+            resBinary.textContent = binaryStr;
+        }
+
+        // Event Listeners
+        rangeInput.addEventListener('input', (e) => renderPrastara(parseInt(e.target.value)));
+        meterInput.addEventListener('input', updateConverter);
+
+        // Initial Run
+        renderPrastara(3);
+        updateConverter();
+    </script>
+</body>
+</html>
