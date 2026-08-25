@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Piṅgala Binary Explorer - IKS CS Simulation</title>
     <link rel="manifest" href="manifest.json">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap');
@@ -15,22 +17,27 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
-    <!-- Auth Overlay Modal -->
+    <!-- Auth Modal / Login Screen Overlay -->
     <div id="auth-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
-            <h2 id="auth-title" class="text-xl font-bold text-center text-amber-400 mb-2">Welcome to Piṅgala Explorer</h2>
+            <div class="flex justify-center mb-4">
+                <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400">
+                    <i data-lucide="cpu" class="w-8 h-8"></i>
+                </div>
+            </div>
+            <h2 id="auth-title" class="text-xl font-bold text-center text-amber-400 mb-1">Welcome to Piṅgala Explorer</h2>
             <p id="auth-subtitle" class="text-xs text-center text-slate-400 mb-6">Sign in to access the application</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="user@example.com" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-amber-400">
+                    <input type="email" id="auth-email" required placeholder="user@example.com" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-slate-100 focus:outline-none focus:border-amber-400">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-amber-400">
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2.5 text-slate-100 focus:outline-none focus:border-amber-400">
                 </div>
-                <button type="submit" id="auth-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg transition">Sign In</button>
+                <button type="submit" id="auth-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg transition shadow-lg shadow-amber-500/20">Sign In</button>
             </form>
             
             <div class="mt-4 text-center">
@@ -39,7 +46,7 @@
         </div>
     </div>
 
-    <!-- Main Application Header -->
+    <!-- Navbar -->
     <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -52,55 +59,141 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <span id="user-display" class="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800 px-2 py-1 rounded hidden"></span>
+                <span id="user-display" class="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800 px-2.5 py-1 rounded hidden"></span>
                 <button id="logout-btn" onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded text-slate-300 hidden">Logout</button>
             </div>
         </div>
     </header>
 
-    <!-- App Body Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 opacity-30 pointer-events-none transition-opacity duration-300" id="main-content">
+    <!-- Main Container -->
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 opacity-20 pointer-events-none transition-opacity duration-300">
+        
+        <!-- Left Panel: Controls & Converter -->
         <section class="lg:col-span-5 space-y-6">
+            
+            <!-- Controls Card -->
             <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                     <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i> Prastāra Generator Controls
                 </h2>
+                
                 <div class="space-y-4">
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <label for="pattern-len" class="text-sm font-medium text-slate-300">Pattern Length (n bits)</label>
                             <span id="len-val" class="text-amber-400 font-mono font-bold text-sm">3</span>
                         </div>
-                        <input type="range" id="pattern-len" min="1" max="6" value="3" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                        <input type="range" id="pattern-len" min="1" max="6" value="3" 
+                               class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                    </div>
+                    
+                    <div class="p-4 bg-slate-900 border border-slate-800 rounded-lg grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase">Total Permutations</span>
+                            <span id="total-perms" class="text-xl font-bold font-mono text-slate-100">8</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-500 block uppercase">Space Complexity</span>
+                            <span class="text-xl font-bold font-mono text-amber-400">2ⁿ</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Uddiṣṭa Converter Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl space-y-4">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i data-lucide="binary" class="w-4 h-4 text-sky-400"></i> Uddiṣṭa Lookup Engine
+                </h2>
+                
+                <div>
+                    <label class="text-xs text-slate-400 mb-1 block">Enter Meter Pattern (Only 'L' & 'G')</label>
+                    <input type="text" id="meter-input" value="GLG" placeholder="e.g. GLG"
+                           class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-slate-100 font-mono focus:outline-none focus:border-sky-400 uppercase tracking-widest">
+                </div>
+
+                <div id="converter-result" class="p-4 bg-slate-900/80 border border-slate-800 rounded-lg flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500 block">Mapped Index (Decimal)</span>
+                        <span id="res-decimal" class="text-2xl font-bold font-mono text-sky-400">5</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-500 block">Binary Standard</span>
+                        <span id="res-binary" class="text-lg font-mono text-slate-300">101</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptual Mapping Quick Reference -->
+            <div class="bg-slate-950/50 border border-slate-800/80 rounded-xl p-6">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i> IKS Quick Dictionary
+                </h2>
+                <ul class="text-xs space-y-2 text-slate-400">
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Laghu (L)</span> <span>Binary 0 (Short state)</span>
+                    </li>
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Guru (G)</span> <span>Binary 1 (Long state)</span>
+                    </li>
+                    <li class="flex justify-between border-b border-slate-800/60 pb-1">
+                        <span class="font-bold text-slate-200">Prastāra</span> <span>Combinatorial Permutations</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-bold text-slate-200">Uddiṣṭa</span> <span>Pattern-to-Index Conversion</span>
+                    </li>
+                </ul>
+            </div>
+
         </section>
 
+        <!-- Right Panel: Dynamic Prastāra Table -->
         <section class="lg:col-span-7">
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl">
-                <div class="overflow-x-auto border border-slate-800 rounded-lg">
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 shadow-xl h-full flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <i data-lucide="table" class="w-4 h-4 text-amber-400"></i> Generated Permutations (Prastāra)
+                    </h2>
+                    <span class="text-xs text-slate-500">Live Binary Mapping</span>
+                </div>
+
+                <div class="overflow-x-auto flex-1 border border-slate-800 rounded-lg">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-900 text-slate-400 text-xs uppercase font-mono border-b border-slate-800">
                                 <th class="p-3">Index</th>
                                 <th class="p-3">Binary Vector</th>
+                                <th class="p-3">Sanskrit Meter (IKS)</th>
+                                <th class="p-3 text-right">Decimal</th>
                             </tr>
                         </thead>
-                        <tbody id="prastara-tbody" class="font-mono text-sm divide-y divide-slate-800/60"></tbody>
+                        <tbody id="prastara-tbody" class="font-mono text-sm divide-y divide-slate-800/60">
+                            <!-- Injected dynamically via JS -->
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
+
     </main>
 
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
+        IKS in Computational Systems • Piṅgala’s Chandaḥśāstra Interactive Tool
+    </footer>
+
+    <!-- Interactive Logic -->
     <script>
+        // Initialize Icons
         lucide.createIcons();
+
+        // Auth Logic
         let isSignUp = false;
 
         function toggleAuthMode() {
             isSignUp = !isSignUp;
             document.getElementById('auth-title').textContent = isSignUp ? 'Create Account' : 'Welcome to Piṅgala Explorer';
+            document.getElementById('auth-subtitle').textContent = isSignUp ? 'Register a new account to continue' : 'Sign in to access the application';
             document.getElementById('auth-btn').textContent = isSignUp ? 'Sign Up' : 'Sign In';
             document.getElementById('toggle-auth-btn').textContent = isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up';
         }
@@ -108,40 +201,94 @@
         function handleAuth(e) {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
-            localStorage.setItem('user', email);
+            localStorage.setItem('pingala_user', email);
             showApp(email);
         }
 
         function logout() {
-            localStorage.removeItem('user');
+            localStorage.removeItem('pingala_user');
             location.reload();
         }
 
         function showApp(email) {
             document.getElementById('auth-modal').classList.add('hidden');
             const main = document.getElementById('main-content');
-            main.classList.remove('opacity-30', 'pointer-events-none');
+            main.classList.remove('opacity-20', 'pointer-events-none');
             document.getElementById('user-display').textContent = email;
             document.getElementById('user-display').classList.remove('hidden');
             document.getElementById('logout-btn').classList.remove('hidden');
         }
 
-        // Auto login check
-        const activeUser = localStorage.getItem('user');
-        if (activeUser) showApp(activeUser);
-
-        // App logic
-        const rangeInput = document.getElementById('pattern-len');
-        function renderPrastara(n) {
-            document.getElementById('len-val').textContent = n;
-            let html = '';
-            for (let i = 0; i < (1 << n); i++) {
-                html += `<tr class="border-b border-slate-800"><td class="p-3 text-slate-400">${i}</td><td class="p-3 text-amber-400 font-bold">${i.toString(2).padStart(n, '0')}</td></tr>`;
-            }
-            document.getElementById('prastara-tbody').innerHTML = html;
+        // Check if user is already logged in
+        const activeUser = localStorage.getItem('pingala_user');
+        if (activeUser) {
+            showApp(activeUser);
         }
+
+        // DOM Elements
+        const rangeInput = document.getElementById('pattern-len');
+        const lenVal = document.getElementById('len-val');
+        const totalPerms = document.getElementById('total-perms');
+        const prastaraTbody = document.getElementById('prastara-tbody');
+        const meterInput = document.getElementById('meter-input');
+        const resDecimal = document.getElementById('res-decimal');
+        const resBinary = document.getElementById('res-binary');
+
+        // Generator Logic
+        function renderPrastara(n) {
+            const total = 1 << n;
+            lenVal.textContent = n;
+            totalPerms.textContent = total;
+            
+            let html = '';
+            for (let i = 0; i < total; i++) {
+                const binaryStr = i.toString(2).padStart(n, '0');
+                const meterStr = binaryStr.replace(/0/g, 'L').replace(/1/g, 'G');
+                
+                // Highlight L and G differently
+                const styledMeter = meterStr.split('').map(char => 
+                    char === 'L' 
+                        ? `<span class="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 font-bold">L</span>`
+                        : `<span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">G</span>`
+                ).join(' ');
+
+                html += `
+                    <tr class="hover:bg-slate-900/50 transition">
+                        <td class="p-3 text-slate-500">${i}</td>
+                        <td class="p-3 text-slate-300">${binaryStr}</td>
+                        <td class="p-3">${styledMeter}</td>
+                        <td class="p-3 text-right text-amber-400 font-bold">${i}</td>
+                    </tr>
+                `;
+            }
+            prastaraTbody.innerHTML = html;
+        }
+
+        // Converter Logic
+        function updateConverter() {
+            const val = meterInput.value.trim().toUpperCase();
+            if (!val || !/^[LG]+$/.test(val)) {
+                resDecimal.textContent = '-';
+                resBinary.textContent = 'Invalid Input';
+                resBinary.classList.add('text-red-400');
+                return;
+            }
+            resBinary.classList.remove('text-red-400');
+
+            const binaryStr = val.replace(/L/g, '0').replace(/G/g, '1');
+            const decimalVal = parseInt(binaryStr, 2);
+
+            resDecimal.textContent = decimalVal;
+            resBinary.textContent = binaryStr;
+        }
+
+        // Event Listeners
         rangeInput.addEventListener('input', (e) => renderPrastara(parseInt(e.target.value)));
+        meterInput.addEventListener('input', updateConverter);
+
+        // Initial Run
         renderPrastara(3);
+        updateConverter();
     </script>
 </body>
 </html>
